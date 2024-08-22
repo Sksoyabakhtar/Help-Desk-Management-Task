@@ -1,0 +1,68 @@
+{% extends "staff_template/staff_home.html" %}
+
+{% block content %}
+<div class="app-main">
+    <div class="app-main__outer">
+        <div class="app-main__inner">
+            <div class="app-page-title">
+                <div class="page-title-wrapper">
+                    <div class="page-title-heading">
+                        <div class="page-title-icon">
+                            <i class="pe-7s-ticket icon-gradient bg-mean-fruit"></i>
+                        </div>
+                        <div>Create Ticket</div>
+                    </div>
+                </div>
+            </div>
+            <div class="main-card mb-3 card">
+                <div class="card-body">
+                    <form id="createTicketForm" method="post" enctype="multipart/form-data" class="needs-validation" novalidate>
+                        {% csrf_token %}
+                        
+                        <div class="form-group">
+                            <label for="title">Title:</label>
+                            <input type="text" id="title" name="title" required class="form-control">
+                            <div class="invalid-feedback">Title is required.</div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="description">Description:</label>
+                            <textarea id="description" name="description" rows="4" required class="form-control"></textarea>
+                            <div class="invalid-feedback">Description is required.</div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="attachments">Attachments:</label>
+                            <input type="file" id="attachments" name="attachments" multiple class="form-control-file">
+                            <div class="invalid-feedback">You can attach multiple files.</div>
+                        </div>
+                        
+                        <button type="submit" class="mt-1 btn btn-primary">Create Ticket</button>
+                        <a href="{% url 'manage_tickets' %}" class="mt-1 btn btn-secondary">Back to Tickets</a>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        document.getElementById('createTicketForm').addEventListener('submit', function (event) {
+            var form = this;
+            if (!form.checkValidity()) {
+                event.preventDefault();
+                event.stopPropagation();
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Validation Error',
+                    text: 'Please fill out all required fields.',
+                    timer: 2000
+                });
+            }
+            form.classList.add('was-validated');
+        }, false);
+    });
+</script>
+{% endblock content %}

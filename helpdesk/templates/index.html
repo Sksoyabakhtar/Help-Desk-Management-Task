@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Help Desk Management System - Login</title>
+  <link href="https://fonts.googleapis.com/css?family=Roboto:300" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+  <link rel="icon" href="https://media.licdn.com/dms/image/C4D0BAQEgy4es8pfLZg/company-logo_200_200/0/1660819245367?e=2147483647&v=beta&t=XBB1QZFEsbDlN648Dcjdhj8D-2GIDOUgqkv77m2VGP8" type="image/x-icon">
+  <style>
+    .login-page {
+      width: 360px;
+      padding: 8% 0 0;
+      margin: auto;
+    }
+    .form {
+      position: relative;
+      z-index: 1;
+      background: #FFFFFF;
+      max-width: 360px;
+      margin: 0 auto 100px;
+      padding: 45px;
+      text-align: center;
+      box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2), 0 5px 5px 0 rgba(0, 0, 0, 0.24);
+      border-radius: 8px;
+    }
+    .form input, .form select {
+      font-family: "Roboto", sans-serif;
+      outline: 0;
+      background: #f2f2f2;
+      width: 100%;
+      border: 1px solid #ccc;
+      margin: 0 0 15px;
+      padding: 15px;
+      box-sizing: border-box;
+      font-size: 14px;
+      border-radius: 4px;
+    }
+    .form button {
+      font-family: "Roboto", sans-serif;
+      text-transform: uppercase;
+      outline: 0;
+      background: #007BFF;
+      width: 100%;
+      border: 0;
+      padding: 15px;
+      color: #FFFFFF;
+      font-size: 14px;
+      transition: all 0.3 ease;
+      cursor: pointer;
+      border-radius: 4px;
+    }
+    .form button:hover, .form button:active, .form button:focus {
+      background: #0056b3;
+    }
+    .form .message {
+      margin: 15px 0 0;
+      color: #666;
+      font-size: 14px;
+    }
+    .form .message a {
+      color: #007BFF;
+      text-decoration: none;
+      cursor: pointer;
+    }
+    body {
+      background: linear-gradient(120deg, #2980b9, #8e44ad);
+      font-family: "Roboto", sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .form h2 {
+      margin: 0 0 15px;
+      font-size: 24px;
+      font-weight: 300;
+      color: #333;
+    }
+    .form .error {
+      color: red;
+      margin-bottom: 15px;
+    }
+  </style>
+</head>
+<body>
+  <div class="login-page">
+    <div class="form">
+      <h2>Help Desk Management System</h2>
+      {% if messages %}
+        <div class="error">
+          {% for message in messages %}
+            <p>{{ message }}</p>
+          {% endfor %}
+        </div>
+      {% endif %}
+      <form class="register-form" method="POST" action="{% url 'register' %}" id="register-form" style="display: none;">
+        {% csrf_token %}
+        <input type="text" name="name" placeholder="Name" required />
+        <input type="email" name="email" placeholder="Email Address" required pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$" />
+        <input type="text" name="mobile_number" placeholder="Mobile Number" required pattern="\d{10}" />
+        <input type="password" name="password" placeholder="Password" required />
+        <select name="role" required>
+          <option value="" disabled selected>Select Role</option>
+          <option value="1">User</option>
+          {% comment %} <option value="2">Customer Supportive</option> {% endcomment %}
+          <option value="3">Customer Supportive</option>
+        </select>
+        <button type="submit">Create</button>
+        <p class="message">Already registered? <a href="#">Sign In</a></p>
+      </form>
+      <form class="login-form" method="POST" action="{% url 'login' %}" id="login-form">
+        {% csrf_token %}
+        <input type="email" name="email" placeholder="Email Address" required pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$" />
+        <input type="password" name="password" placeholder="Password" required />
+        <button type="submit">Login</button>
+        <p class="message">Not registered? <a href="#">Create an account</a></p>
+      </form>
+    </div>
+  </div>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script>
+    $('.message a').click(function(e){
+      e.preventDefault();
+      $('form').animate({height: "toggle", opacity: "toggle"}, "slow");
+    });
+
+    // Ensure role is selected before form submission
+    $('#register-form').on('submit', function(e) {
+      var role = $(this).find('select[name="role"]').val();
+      if (role === null || role === "") {
+        alert('Please select a role.');
+        e.preventDefault();
+      }
+    });
+  </script>
+</body>
+</html>

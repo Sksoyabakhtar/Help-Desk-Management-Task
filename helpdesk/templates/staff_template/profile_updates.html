@@ -1,0 +1,66 @@
+{% extends "staff_template/staff_home.html" %}
+
+{% block content %}
+<div class="app-main">
+    <div class="app-main__outer">
+        <div class="app-main__inner">
+            <div class="app-page-title">
+                <div class="page-title-wrapper">
+                    <div class="page-title-heading">
+                        <div class="page-title-icon">
+                            <i class="pe-7s-user icon-gradient bg-mean-fruit"></i>
+                        </div>
+                        <div>Profile Updates</div>
+                    </div>
+                </div>
+            </div>
+            <div class="main-card mb-3 card">
+                <div class="card-body">
+                    <form id="profileUpdatesForm" method="post">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label for="email">Email:</label>
+                            <input type="email" id="email" name="email" value="{{ user.email }}" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="first_name">Name:</label>
+                            <input type="text" id="first_name" name="first_name" value="{{ user.first_name }}" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="mobile_number">Mobile Number:</label>
+                            <input type="text" id="mobile_number" name="mobile_number" value="{{ profile.mobile_number }}" class="form-control" required pattern="\d{10}">
+                        </div>
+                        <div class="form-group">
+                            <label for="role">Role:</label>
+                            <input type="text" id="role" name="role" value="{{ profile.role_display }}" class="form-control" readonly>
+                        </div>
+                        <button type="submit" class="mt-1 btn btn-primary">Update Profile</button>
+                        <a href="{% url 'staff_home' %}" class="mt-1 btn btn-secondary">Back</a>
+                    </form>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        document.getElementById('profileUpdatesForm').addEventListener('submit', function (event) {
+            var form = this;
+            if (!form.checkValidity()) {
+                event.preventDefault();
+                event.stopPropagation();
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Validation Error',
+                    text: 'Please fill out all required fields.',
+                    timer: 2000
+                });
+            }
+            form.classList.add('was-validated');
+        }, false);
+    });
+</script>
+{% endblock content %}

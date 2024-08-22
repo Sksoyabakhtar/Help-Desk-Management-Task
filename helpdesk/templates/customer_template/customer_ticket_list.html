@@ -1,0 +1,125 @@
+{% extends "customer_template/customer_home.html" %}
+
+{% block content %}
+<div class="app-main">
+    <div class="app-main__outer">
+        <div class="app-main__inner">
+            <div class="app-page-title">
+                <div class="page-title-wrapper">
+                    <div class="page-title-heading">
+                        <div class="page-title-icon">
+                            <i class="pe-7s-ticket icon-gradient bg-mean-fruit"></i>
+                        </div>
+                        <div>My Tickets</div>
+                    </div>
+                </div>
+            </div>
+            <div class="main-card mb-3 card">
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table id="tickets-table" class="mb-0 table table-striped table-bordered" cellspacing="0" width="100%">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Title</th>
+                                    <th>Description</th>
+                                    <th>Status</th>
+                                    <th>Created At</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for ticket in tickets %}
+                                {% if ticket.status == 'Resolved' %}
+                                <tr style="background-color: lightgreen;">
+                                {% elif ticket.updated_at|timesince:now > '2 days' %}
+                                <tr style="background-color: lightcoral;">
+                                {% else %}
+                                <tr>
+                                {% endif %}
+                                    <td>{{ ticket.id }}</td>
+                                    <td>{{ ticket.title }}</td>
+                                    <td>{{ ticket.description|slice:":50" }}{% if ticket.description|length > 50 %}...{% endif %}</td>
+                                    <td>{{ ticket.status }}</td>
+                                    <td>{{ ticket.created_at }}</td>
+                                    <td>
+                                        <a href="{% url 'customer_ticket_detail' ticket.id %}" class="btn btn-info btn-sm">View</a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Include jQuery -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<!-- Include DataTables CSS and JS -->
+<link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
+<script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+<!-- Include SweetAlert2 -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+    $(document).ready(function() {
+        $('#tickets-table').DataTable({
+            "dom": '<"dt-buttons"fB><"clear">lrt<"bottom"ip>',
+            "paging": true,
+            "autoWidth": true,
+            buttons: [
+                {
+                    extend: 'copy',
+                    className: 'btn btn-secondary btn-sm',
+                    text: '<i class="fas fa-copy"></i> Copy',
+                    exportOptions: {
+                        columns: ':visible'
+                    }
+                },
+                {
+                    extend: 'excel',
+                    className: 'btn btn-secondary btn-sm',
+                    text: '<i class="fas fa-file-excel"></i> Excel',
+                    exportOptions: {
+                        columns: ':visible'
+                    }
+                },
+                {
+                    extend: 'csv',
+                    className: 'btn btn-secondary btn-sm',
+                    text: '<i class="fas fa-file-csv"></i> CSV',
+                    exportOptions: {
+                        columns: ':visible'
+                    }
+                },
+                {
+                    extend: 'pdf',
+                    className: 'btn btn-secondary btn-sm',
+                    text: '<i class="fas fa-file-pdf"></i> PDF',
+                    exportOptions: {
+                        columns: ':visible'
+                    }
+                },
+                {
+                    extend: 'print',
+                    className: 'btn btn-secondary btn-sm',
+                    text: '<i class="fas fa-print"></i> Print',
+                    exportOptions: {
+                        columns: ':visible'
+                    },
+                    customize: function(win) {
+                        $(win.document.body).prepend(
+                            '<div style="text-align:left; margin-bottom:20px;">' +
+                            '<img src="https://example.com/logo.png" style="width: 200px;" />' + // Adjust logo URL
+                            '</div>'
+                        );
+                    }
+                }
+            ]
+        });
+    });
+</script>
+{% endblock content %}

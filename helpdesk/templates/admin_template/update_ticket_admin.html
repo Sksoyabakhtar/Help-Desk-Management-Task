@@ -1,0 +1,99 @@
+{% extends "admin_template/admin_home.html" %}
+
+{% block content %}
+<div class="app-main">
+    <div class="app-main__outer">
+        <div class="app-main__inner">
+            <div class="app-page-title">
+                <div class="page-title-wrapper">
+                    <div class="page-title-heading">
+                        <div class="page-title-icon">
+                            <i class="pe-7s-edit icon-gradient bg-mean-fruit"></i>
+                        </div>
+                        <div>Update Ticket</div>
+                    </div>
+                </div>
+            </div>
+            <div class="main-card mb-3 card">
+                <div class="card-body">
+                    <form id="updateTicketForm" method="post" class="needs-validation" novalidate>
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label for="status">Status:</label>
+                            <select id="status" name="status" required class="form-control">
+                                {% for key, value in ticket.STATUS_CHOICES %}
+                                    <option value="{{ key }}" {% if ticket.status == key %}selected{% endif %}>{{ value }}</option>
+                                {% endfor %}
+                            </select>
+                            <div class="invalid-feedback">Status is required.</div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="note">Add Note:</label>
+                            <textarea id="note" name="note" rows="4" class="form-control"></textarea>
+                        </div>
+
+                        <button type="submit" class="mt-1 btn btn-primary">Update Ticket</button>
+                        <a href="{% url 'manage_tickets_ad' %}" class="mt-1 btn btn-secondary">Back to Tickets</a>
+                    </form>
+
+                    <div class="form-group mt-4">
+                        <label>Notes:</label>
+                        {% if notes %}
+                            <ul class="list-group">
+                                {% for note in notes %}
+                                    <li class="list-group-item">
+                                        <strong>{{ note.user.email }}:</strong> {{ note.note }}
+                                        <small class="text-muted">({{ note.created_at|date:"D M d, Y H:i" }})</small>
+                                        <form method="post" action="{% url 'delete_note' note.id %}" style="display:inline;">
+                                            {% csrf_token %}
+                                            <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                                        </form>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        {% else %}
+                            <p>No notes available.</p>
+                        {% endif %}
+                    </div>
+
+                    <div class="form-group mt-4">
+                        <label>Attachments:</label>
+                        {% if attachments %}
+                            <ul class="list-group">
+                                {% for attachment in attachments %}
+                                    <li class="list-group-item">
+                                        <img src="{{ attachment.file.url }}" alt="Attachment" style="max-width: 10%; height: auto;">
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        {% else %}
+                            <p>No attachments available.</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        document.getElementById('updateTicketForm').addEventListener('submit', function (event) {
+            var form = this;
+            if (!form.checkValidity()) {
+                event.preventDefault();
+                event.stopPropagation();
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Validation Error',
+                    text: 'Please fill out all required fields.',
+                    timer: 2000
+                });
+            }
+            form.classList.add('was-validated');
+        }, false);
+    });
+</script>
+{% endblock content %}

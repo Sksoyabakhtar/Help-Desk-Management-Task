@@ -1,0 +1,67 @@
+{% extends "customer_template/customer_home.html" %}
+
+{% block content %}
+<div class="app-main">
+    <div class="app-main__outer">
+        <div class="app-main__inner">
+            <div class="app-page-title">
+                <div class="page-title-wrapper">
+                    <div class="page-title-heading">
+                        <div class="page-title-icon">
+                            <i class="pe-7s-note2 icon-gradient bg-mean-fruit"></i>
+                        </div>
+                        <div>View Ticket</div>
+                    </div>
+                </div>
+            </div>
+            <div class="main-card mb-3 card">
+                <div class="card-body">
+                    <h5 class="card-title">Ticket Details</h5>
+                    <div class="form-group">
+                        <label for="title">Title:</label>
+                        <input type="text" id="title" value="{{ ticket.title }}" class="form-control" disabled>
+                    </div>
+                    <div class="form-group">
+                        <label for="description">Description:</label>
+                        <textarea id="description" class="form-control" rows="4" disabled>{{ ticket.description }}</textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="status">Status:</label>
+                        <input type="text" id="status" value="{{ ticket.get_status_display }}" class="form-control" disabled>
+                    </div>
+                    <div class="form-group">
+                        <label>Notes:</label>
+                        {% if notes %}
+                            <ul class="list-group">
+                                {% for note in notes %}
+                                    <li class="list-group-item">
+                                        <strong>{{ note.user.email }}:</strong> {{ note.note }}
+                                        <small class="text-muted">({{ note.created_at|date:"D M d, Y H:i" }})</small>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        {% else %}
+                            <p>No notes available.</p>
+                        {% endif %}
+                    </div>
+                    <div class="form-group">
+                        <label>Attachments:</label>
+                        {% if attachments %}
+                            <ul class="list-group">
+                                {% for attachment in attachments %}
+                                    <li class="list-group-item">
+                                        <a href="{{ attachment.file.url }}" target="_blank">{{ attachment.file.name }}</a>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        {% else %}
+                            <p>No attachments available.</p>
+                        {% endif %}
+                    </div>
+                    <a href="{% url 'customer_ticket_list' %}" class="btn btn-secondary">Back to Ticket List</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}
